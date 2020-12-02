@@ -26,6 +26,14 @@ To create the schema, you will can npm run reset.(this script will reset the dat
 
 To seed, you just need to npm run seed(it will create 100 products. if there is any duplicate, it will ignore it)
 
+### Endpoints
+
+* GET: /api/carousel/:productid/moreToConsider
+* GET: /api/carousel/:productid/similar
+* GET: /api/carousel/:productid/featured
+* POST: /api/carousel/
+* PUT: /api/carousel/:productid
+* DELETE: /api/carousel/:productid
 
 
 ## Requirements
@@ -34,8 +42,6 @@ An `nvmrc` file is included if using [nvm](https://github.com/creationix/nvm).
 
 - Node 6.13.0
 - etc
-
-## Development
 
 ### Installing Dependencies
 
