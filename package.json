@@ -11,7 +11,8 @@
     "server": "node server/server.js",
     "server:dev": "nodemon server/server.js",
     "build": "webpack -d -w",
-    "seed": "node database/fakeData/fakeData.js",
+    "seedMongo": "node database/seeding/mongo/seed.js",
+    "seedPostgres": "node database/seeding/postgres/seed.js",
     "test": "jest --watch --coverage",
     "reset": "mysql -u gvsalinas -p < schema.sql",
     "doc": "jsdoc -c jsdoc.json"
@@ -24,6 +25,7 @@
     "pg-hstore": "^2.3.3",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
+    "sequelize": "^6.3.5",
     "styled-components": "^5.2.1",
     "underscore": "^1.11.0"
   },
