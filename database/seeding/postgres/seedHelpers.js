@@ -1,5 +1,7 @@
 const { Sequelize, DataTypes } = require('sequelize');
 const { Client } = require('pg');
+const copyFrom = require('pg-copy-streams').from;
+const fs = require('fs');
 var { database, user, password } = require('../../config/config.js');
 const Generate = require('../fakeDataGen.js');
 
@@ -79,27 +81,22 @@ const fillCategories = (n) => {
     });
 };
 
-const copy = `COPY products (id, name, price, "imageUrl", featured, "typeId", "categoryId")
-              FROM "/home/gvsalinas/SDC/SimilarFeaturedCarousel/database/fakeData/products.csv"
-              DELIMITER ',' CSV HEADER`;
+const csvToDB = (done) => {
+  var stream = client.query(copyFrom('COPY products (id, name, price, "imageUrl", featured, "typeId", "categoryId") FROM STDIN'));
+  var fileStream = fs.createReadStream(__dirname + '/postgres.csv');
+  fileStream.on('error', done);
+  stream.on('error', done);
+  stream.on('finish', done);
+  fileStream.pipe(stream);
+};
 
-const fillProducts = () => {
+const fillProducts = (database) => {
   return Product.sync({force: true})
     .then(() => {
-      return Generate.createProductsCSV();
+      return Generate.createProductsCSV(database);
     })
     .then(response => {
-      console.log(response);
-      return client.query(copy)
-        .then(response => {
-          console.log('Seeding Done');
-        })
-        .catch(err => {
-          console.log(err);
-        });
-    })
-    .then(() => {
-      client.end();
+      console.log('\n', response);
       sequelize.close();
     })
     .catch(err => {
@@ -115,5 +112,5 @@ module.exports = {
 };
 
 /* COPY products (id, name, price, "imageUrl", featured, "typeId", "categoryId")
-FROM '/home/gvsalinas/SDC/SimilarFeaturedCarousel/database/seeding/postgres.csv'
+FROM '/home/gvsalinas/SDC/SimilarFeaturedCarousel/database/seeding/postgres/postgres.csv'
 DELIMITER ',' CSV HEADER; */

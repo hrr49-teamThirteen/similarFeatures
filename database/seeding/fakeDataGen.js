@@ -26,30 +26,48 @@ const createProductTypes = (n) => {
   return typeModels;
 };
 
-const createProduct = (i) => {
-  return [
-    i,
-    faker.commerce.productName(),
-    faker.commerce.price(),
-    faker.image.image(),
-    Math.floor(Math.random() * 2),
-    faker.random.number({min: 1, max: 24}),
-    faker.random.number({min: 1, max: 22})
-  ];
+const createProduct = (i, database) => {
+  if (database === 'mongo') {
+    var product = [
+      faker.commerce.productName(),
+      faker.commerce.price(),
+      faker.image.image(),
+      Math.floor(Math.random() * 2),
+      faker.commerce.department(),
+      faker.commerce.product()
+    ];
+  } else {
+    var product = [
+      i,
+      faker.commerce.productName(),
+      faker.commerce.price(),
+      faker.image.image(),
+      Math.floor(Math.random() * 2),
+      faker.random.number({min: 1, max: 24}),
+      faker.random.number({min: 1, max: 22})
+    ];
+  }
+  return product;
 };
 
-function createProductsCSV () {
+function createProductsCSV (database) {
   return new Promise((resolve, reject) => {
-    let writeStream = fs.createWriteStream('database/seeding/postgres.csv', 'utf8');
-    writeStream.write('id, price, imgUrl, featured, featured, visited, categoryId, typeId\n', 'utf8');
-    let i = 10000000;
+    if (database === 'mongo') {
+      var writeStream = fs.createWriteStream('database/seeding/mongo/mongo.csv', 'utf8');
+      writeStream.write('name, price, imgUrl, featured, visited, category, type\n', 'utf8');
+    } else {
+      var writeStream = fs.createWriteStream('database/seeding/postgres/postgres.csv', 'utf8');
+      writeStream.write('id, name, price, imgUrl, featured, visited, categoryId, typeId\n', 'utf8');
+    }
+    let i = 0;
+    const MAX_RECORDS = 10000000;
 
     function write() {
       let space = true;
-      while (space && i > 0) {
-        i -= 1;
-        var data = createProduct(i).join(',') + '\n';
-        if (i === 0) {
+      while (space && i < MAX_RECORDS) {
+        i += 1;
+        var data = createProduct(i, database).join(',') + '\n';
+        if (i === MAX_RECORDS) {
           writeStream.write(data, 'utf-8', () => {
             writeStream.end();
             resolve('CSV Done');
@@ -59,7 +77,8 @@ function createProductsCSV () {
         }
       }
 
-      if (i > 0) {
+      if (i < MAX_RECORDS) {
+        process.stdout.write(`\r\x1b[KProducts written to CSV: ${Math.ceil((i / MAX_RECORDS) * 100)}%`);
         writeStream.once('drain', write);
       }
     }
