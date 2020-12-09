@@ -7,7 +7,7 @@ Fake.fillTypes(200)
     return Fake.fillCategories(200);
   })
   .then(() => {
-    Fake.fillProducts('postgres');
+    Fake.fillProducts();
   })
   .catch(err => {
     console.log(err);

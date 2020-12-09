@@ -1,6 +1,6 @@
 const Generate = require('../fakeDataGen.js');
 const { MongoClient } = require('mongodb');
-const uri = 'mongodb://localhost/SDC';
+const uri = 'mongodb://localhost:8282/SDC';
 
 var dummy = {
   name: 'Hack Reactor',
@@ -17,10 +17,7 @@ MongoClient.connect(uri, { useUnifiedTopology: true }, function(err, client) {
     console.log(err);
   }
   var db = client.db('SDC');
-  db.dropCollection('products')
-    .then(() => {
-      return db.createCollection('products');
-    })
+  db.createCollection('products')
     .then(collection => {
       return collection.insertOne(dummy);
     })
