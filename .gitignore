@@ -4,3 +4,4 @@ database/config/config.js
 docs
 
 public/dist/bundle.js
+database/seeding/products.csv

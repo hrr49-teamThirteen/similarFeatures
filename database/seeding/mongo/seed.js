@@ -1,15 +1,12 @@
-const Fake = require('./seedHelpers.js');
+const db = require('./mongoInit.js');
+const Generate = require('../fakeDataGen.js');
+const uri = 'mongodb://localhost/SDC';
 
-console.log('Seeding fake data...');
-
-Fake.fillTypes(200)
-  .then(() => {
-    return Fake.fillCategories(200);
-  })
-  .then(() => {
-    Fake.fillProducts();
-  })
-  .catch(err => {
-    console.log(err);
+Generate.createProductsCSV('mongo')
+  .then(response => {
+    console.log('\n', response);
   });
+
+
+
 

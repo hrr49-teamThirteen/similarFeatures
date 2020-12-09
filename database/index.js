@@ -1,59 +1,65 @@
-const mysql = require('mysql');
 const { database, user, password } = require('./config/config.js');
+const Query = require('./queries.js');
+const { Client } = require('pg');
 
-const connection = mysql.createConnection({
-  host: 'localhost',
-  user,
-  password,
-  database
-});
+const client = new Client(`postgres://${user}:${password}@localhost:5432/${database}`);
 
-const getDataWithPType = (productid, cb) => {
-  var qProductType = 'SELECT name FROM productTypes LEFT JOIN products ON productTypes.id = products.productType_id WHERE products.id = ?';
+(async function createConnection() {
+  await client.connect();
+})();
 
-  connection.query(qProductType, [productid], (err, data) => {
-    if (err) { return console.log(err); }
-    var productType = (data[0].name);
-
-    var qString = 'SELECT products.id, imageUrl, price, description, productTypes.name FROM products LEFT JOIN productTypes ON products.productType_id = productTypes.id WHERE productTypes.name = ?';
-    connection.query(qString, [productType], (err, data) => {
-      if (err) { return console.log(err); }
-      cb(data);
+const getDataWithPType = (productId) => {
+  return client.query('SELECT type_id FROM products WHERE id = $1;', [productId])
+    .then(result => {
+      var type = result.rows[0].type_id;
+      return client.query(Query.PTypeQuery, [type]);
+    })
+    .catch(err => {
+      console.log(err);
     });
-  });
 };
 
-const getDataWithCategory = (productid, cb) => {
-  var qCategory = 'SELECT name FROM categories LEFT JOIN products ON categories.id = products.category_id WHERE products.id = ?';
-
-  connection.query(qCategory, [productid], (err, data) => {
-    if (err) { return console.log(err); }
-    var productType = (data[0].name);
-
-    var qString = 'SELECT products.id, imageUrl, price, description, categories.name, featured FROM products LEFT JOIN categories ON products.category_id = categories.id WHERE categories.name = ?';
-    connection.query(qString, [productType], (err, data) => {
-      if (err) { return console.log(err); }
-      cb(data);
+const getDataWithCategory = (productId, cb) => {
+  return client.query('SELECT category_id FROM products WHERE id = $1;', [productId])
+    .then(result => {
+      var category = result.rows[0].category_id;
+      return client.query(Query.CategoryQuery, [category]);
+    })
+    .catch(err => {
+      console.log(err);
     });
-  });
 };
 
-const createProduct = (productObj) => {
-
+const getFeaturedData = (productId) => {
+  return client.query('SELECT category_id FROM products WHERE id = $1;', [productId])
+    .then(result => {
+      var category = result.rows[0].category_id;
+      return client.query(Query.FeaturedQuery, [category]);
+    })
+    .catch(err => {
+      console.log(err);
+    });
 };
 
-const updateField = (productId, fieldObj) => {
+const createProduct = ({name, price, image, featured, visited, categoryId, typeId}) => {
+  var values = [name, price, image, featured, visited, categoryId, typeId];
+  return client.query(Query.create, values);
+};
 
+const updateProduct = (productId, field, val) => {
+  var values = [val, productId];
+  return client.query(Query.update(field), values);
 };
 
 const deleteProduct = (productId) => {
-
+  return client.query(Query.remove, [productId]);
 };
 
 module.exports = {
   getDataWithPType,
   getDataWithCategory,
+  getFeaturedData,
   createProduct,
-  updateField,
+  updateProduct,
   deleteProduct
 };
