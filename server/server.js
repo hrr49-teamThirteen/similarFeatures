@@ -1,5 +1,5 @@
+require('newrelic');
 const app = require('./index.js');
-
 const PORT = 9999;
 
 app.listen(PORT, () => {
