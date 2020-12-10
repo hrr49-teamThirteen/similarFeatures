@@ -20,20 +20,20 @@ class Image extends React.Component {
       >
         <styles.Image
           id={this.props.data.id}
-          src={this.props.data.imageUrl}>
+          src={this.props.data.image}>
         </styles.Image>
         <styles.ProductInfo>
           <styles.Price
             id={this.props.data.id}
           >
-            {`$${this.props.data.price.toFixed(2)}`}
+            {`$${parseInt(this.props.data.price).toFixed(2)}`}
           </styles.Price>
           <div
             id={this.props.data.id}
           >
-            {(this.props.data.description.length < 23) ?
-            this.props.data.description :
-            this.props.data.description.substr(0, 22).concat('...')}
+            {(this.props.data.name.length < 23) ?
+            this.props.data.name :
+            this.props.data.name.substr(0, 22).concat('...')}
           </div>
         </styles.ProductInfo>
 

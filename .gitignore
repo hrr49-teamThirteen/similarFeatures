@@ -5,3 +5,6 @@ docs
 
 public/dist/bundle.js
 database/seeding/products.csv
+newrelic.js
+newrelic_agent.log
+newrelic.js:Zone.Identifier
