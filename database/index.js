@@ -1,8 +1,8 @@
-const { database, user, password } = require('./config/config.js');
+const { database, user, password, address } = require('./config/config.js');
 const Query = require('./queries.js');
 const { Client } = require('pg');
 
-const client = new Client(`postgres://${user}:${password}@localhost:5432/${database}`);
+const client = new Client(`postgres://${user}:${password}@${address}/${database}`);
 
 (async function createConnection() {
   await client.connect();

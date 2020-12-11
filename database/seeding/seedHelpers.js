@@ -1,9 +1,9 @@
 const { Client } = require('pg');
-var { database, user, password } = require('../config/config.js');
+var { database, user, password, address } = require('../config/config.js');
 const Generate = require('./fakeDataGen.js');
 const Query = require('./seedQueries/queries.js');
 
-const client = new Client(`postgres://${user}:${password}@localhost:5432/${database}`);
+const client = new Client(`postgres://${user}:${password}@${address}/${database}`);
 
 const fillTypes = (n) => {
   return client.connect()
