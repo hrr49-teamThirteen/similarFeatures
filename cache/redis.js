@@ -5,19 +5,12 @@ const redis = new Redis(6379, '127.0.0.1', {
   showFriendlyErrorStack: true,
 });
 
-const connect = function() {
-  return new Promise((resolve, reject) => {
-    redis.on('connect', () => {
-      console.log('Redis Connected');
-      resolve('connected');
-    });
-    redis.on('error', () => {
-      console.log('Redis Connection Error');
-      reject('connected error');
-    });
-  });
-};
-connect();
+redis.on('connect', () => {
+  console.log('connected');
+});
+redis.on('error', (err) => {
+  console.log(err);
+});
 
 const getGroup = (key) => {
   return redis.get(key)
