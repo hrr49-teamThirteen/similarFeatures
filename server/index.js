@@ -1,5 +1,4 @@
 const express = require ('express');
-const _ = require ('underscore');
 const db = require ('../database/index.js');
 const bodyparser = require('body-parser');
 
@@ -13,7 +12,7 @@ app.get('/api/carousel/:productid/moreToConsider', (req, res) => {
   var productid = parseInt(req.params.productid);
   db.getDataWithPType(productid)
     .then(results => {
-      res.json(results.rows).end();
+      res.json(results).end();
     })
     .catch(err => {
       console.log(err);
@@ -24,7 +23,7 @@ app.get('/api/carousel/:productid/similar', (req, res) => {
   var productid = parseInt(req.params.productid);
   db.getDataWithCategory(productid)
     .then(results => {
-      res.json(results.rows).end();
+      res.json(results).end();
     })
     .catch(err => {
       console.log(err);
@@ -35,7 +34,7 @@ app.get('/api/carousel/:productid/featured', (req, res) => {
   var productid = parseInt(req.params.productid);
   db.getFeaturedData(productid)
     .then(results => {
-      res.json(results.rows).end();
+      res.json(results).end();
     })
     .catch(err => {
       console.log(err);

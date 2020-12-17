@@ -1,81 +1,58 @@
-const { database, user, password, address } = require('./config/config.js');
-const Query = require('./queries.js');
-const { Pool } = require('pg');
-
-const pool = new Pool({
-  connectionString: `postgres://${user}:${password}@${address}/${database}`
-});
+const Redis = require('../cache/redis.js');
+const PG = require('./models.js');
 
 const getDataWithPType = (productId) => {
-  return pool.connect()
-    .then(client => {
-      return client.query('SELECT type_id FROM products WHERE id = $1;', [productId])
-        .then(result => {
-          var type = result.rows[0].type_id;
-          return client.query(Query.PTypeQuery, [type]);
+  return PG.getType(productId)
+    .then(result => {
+      var [client, type] = result;
+      return Redis.getGroup(`type:${type}`)
+        .then(cache => {
+          if (cache) {
+            client.release();
+            return JSON.parse(cache);
+          } else {
+            return PG.getCategoryGroup(client, type);
+          }
         })
-        .then(results => {
-          client.release();
-          return results;
-        });
-    })
-    .catch(err => {
-      client.release();
-      console.log(err);
+        .catch(err => console.log(err));
     });
 };
 
 const getDataWithCategory = (productId) => {
-  return pool.connect()
-    .then(client => {
-      return client.query('SELECT category_id FROM products WHERE id = $1;', [productId])
-        .then(result => {
-          var category = result.rows[0].category_id;
-          return client.query(Query.CategoryQuery, [category]);
+  return PG.getCategory(productId)
+    .then(result => {
+      var [client, category] = result;
+      return Redis.getGroup(`category:${category}`)
+        .then(cache => {
+          if (cache) {
+            client.release();
+            return JSON.parse(cache);
+          } else {
+            return PG.getCategoryGroup(client, category);
+          }
         })
-        .then(results => {
-          client.release();
-          return results;
-        });
-    })
-    .catch(err => {
-      client.release();
-      console.log(err);
+        .catch(err => console.log(err));
     });
 };
 
 const getFeaturedData = (productId) => {
-  return pool.connect()
-    .then(client => {
-      return client.query('SELECT category_id FROM products WHERE id = $1;', [productId])
-        .then(result => {
-          var category = result.rows[0].category_id;
-          return client.query(Query.FeaturedQuery, [category]);
+  return PG.getCategory(productId)
+    .then(result => {
+      var [client, category] = result;
+      return Redis.getGroup(`featured:${category}`)
+        .then(cache => {
+          if (cache) {
+            client.release();
+            return JSON.parse(cache);
+          } else {
+            return PG.getCategoryGroup(client, category);
+          }
         })
-        .then(results => {
-          client.release();
-          return results;
-        });
-    })
-    .catch(err => {
-      client.release();
-      console.log(err);
+        .catch(err => console.log(err));
     });
 };
 
-const createProduct = ({name, price, image, featured, visited, categoryId, typeId}) => {
-  var values = [name, price, image, featured, visited, categoryId, typeId];
-  return pool.query(Query.create, values);
-};
-
-const updateProduct = (productId, field, val) => {
-  var values = [val, productId];
-  return pool.query(Query.update(field), values);
-};
-
-const deleteProduct = (productId) => {
-  return pool.query(Query.remove, [productId]);
-};
+const {createProduct, updateProduct, deleteProduct} = PG;
 
 module.exports = {
   getDataWithPType,
