@@ -41,7 +41,7 @@ const getTypeGroup = (client, type) => {
   return client.query(Query.PTypeQuery, [type])
     .then(results => {
       client.release();
-      Redis.setGroup(`type:${category}`, results.rows);
+      Redis.setGroup(`type:${type}`, results.rows);
       return results.rows;
     })
     .catch(err => {

@@ -11,7 +11,7 @@ const getDataWithPType = (productId) => {
             client.release();
             return JSON.parse(cache);
           } else {
-            return PG.getCategoryGroup(client, type);
+            return PG.getTypeGroup(client, type);
           }
         })
         .catch(err => console.log(err));
@@ -45,7 +45,7 @@ const getFeaturedData = (productId) => {
             client.release();
             return JSON.parse(cache);
           } else {
-            return PG.getCategoryGroup(client, category);
+            return PG.getFeaturedGroup(client, category);
           }
         })
         .catch(err => console.log(err));
