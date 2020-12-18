@@ -3,15 +3,13 @@ const PG = require('./models.js');
 
 const getDataWithPType = (productId) => {
   return PG.getType(productId)
-    .then(result => {
-      var [client, type] = result;
+    .then(type => {
       return Redis.getGroup(`type:${type}`)
         .then(cache => {
           if (cache) {
-            client.release();
-            return JSON.parse(cache);
+            return cache;
           } else {
-            return PG.getTypeGroup(client, type);
+            return PG.getTypeGroup(type);
           }
         })
         .catch(err => console.log(err));
@@ -20,15 +18,13 @@ const getDataWithPType = (productId) => {
 
 const getDataWithCategory = (productId) => {
   return PG.getCategory(productId)
-    .then(result => {
-      var [client, category] = result;
+    .then(category => {
       return Redis.getGroup(`category:${category}`)
         .then(cache => {
           if (cache) {
-            client.release();
-            return JSON.parse(cache);
+            return cache;
           } else {
-            return PG.getCategoryGroup(client, category);
+            return PG.getCategoryGroup(category);
           }
         })
         .catch(err => console.log(err));
@@ -37,15 +33,13 @@ const getDataWithCategory = (productId) => {
 
 const getFeaturedData = (productId) => {
   return PG.getCategory(productId)
-    .then(result => {
-      var [client, category] = result;
+    .then(category => {
       return Redis.getGroup(`featured:${category}`)
         .then(cache => {
           if (cache) {
-            client.release();
-            return JSON.parse(cache);
+            return cache;
           } else {
-            return PG.getFeaturedGroup(client, category);
+            return PG.getFeaturedGroup(category);
           }
         })
         .catch(err => console.log(err));

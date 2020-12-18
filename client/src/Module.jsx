@@ -3,7 +3,7 @@ const {React} = window;
 import Carousel from './components/Carousel.jsx';
 import Featured from './components/Featured.jsx';
 import styles from './styledComp/styles.jsx';
-import request from './request.js'
+import request from './request.js';
 
 
 
@@ -16,19 +16,19 @@ class Module extends React.Component {
       similar: [],
       sLength: 0,
       featured: []
-    }
+    };
   }
 
   componentDidMount() {
-    request.getAllData(1, (data) => {
+    request.getAllData(9000000, (data) => {
       this.setState({
         moreToConsider: data[0],
         mLength: Math.ceil(data[0].length / 7),
         similar: data[1],
         sLength: Math.ceil(data[1].length / 7),
         featured: data[2]
-      })
-    })
+      });
+    });
   }
 
   onClick(id) {
@@ -39,16 +39,16 @@ class Module extends React.Component {
         similar: data[1],
         sLength: Math.ceil(data[1].length / 7),
         featured: data[2]
-      },() => {
+      }, () => {
         console.log(this.state.mLength);
-      })
+      });
     });
   }
 
 
 
   render() {
-    return(
+    return (
       <styles.Module>
         <styles.Title>More to Consider</styles.Title>
         <Carousel
@@ -68,7 +68,7 @@ class Module extends React.Component {
           onClick={this.onClick.bind(this)}
         />
       </styles.Module>
-    )
+    );
   }
 }
 

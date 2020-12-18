@@ -9,10 +9,10 @@ app.use(bodyparser.urlencoded({extended: true}));
 app.use(bodyparser.json());
 
 app.get('/api/carousel/:productid/moreToConsider', (req, res) => {
-  var productid = parseInt(req.params.productid);
+  var productid = req.params.productid;
   db.getDataWithPType(productid)
     .then(results => {
-      res.json(results).end();
+      res.send(results).end();
     })
     .catch(err => {
       console.log(err);
@@ -20,10 +20,10 @@ app.get('/api/carousel/:productid/moreToConsider', (req, res) => {
 });
 
 app.get('/api/carousel/:productid/similar', (req, res) => {
-  var productid = parseInt(req.params.productid);
+  var productid = req.params.productid;
   db.getDataWithCategory(productid)
     .then(results => {
-      res.json(results).end();
+      res.send(results).end();
     })
     .catch(err => {
       console.log(err);
@@ -31,10 +31,10 @@ app.get('/api/carousel/:productid/similar', (req, res) => {
 });
 
 app.get('/api/carousel/:productid/featured', (req, res) => {
-  var productid = parseInt(req.params.productid);
+  var productid = req.params.productid;
   db.getFeaturedData(productid)
     .then(results => {
-      res.json(results).end();
+      res.send(results).end();
     })
     .catch(err => {
       console.log(err);
@@ -44,7 +44,7 @@ app.get('/api/carousel/:productid/featured', (req, res) => {
 app.post('/api/carousel/', (req, res) => {
   db.createProduct(req.body)
     .then(result => {
-      res.json(result.rows[0]).end();
+      res.send(result.rows[0]).end();
     })
     .catch(err => {
       console.log(err);
@@ -52,10 +52,10 @@ app.post('/api/carousel/', (req, res) => {
 });
 
 app.put('/api/carousel/:productid', (req, res) => {
-  var productid = parseInt(req.params.productid);
+  var productid = req.params.productid;
   db.updateProduct(productid, req.body.field, req.body.val)
     .then(result => {
-      res.json(result.rows[0]).end();
+      res.send(result.rows[0]).end();
     })
     .catch(err => {
       console.log(err);
@@ -63,10 +63,10 @@ app.put('/api/carousel/:productid', (req, res) => {
 });
 
 app.delete('/api/carousel/:productid', (req, res) => {
-  var productid = parseInt(req.params.productid);
+  var productid = req.params.productid;
   db.deleteProduct(productid)
     .then(result => {
-      res.json(result.rows[0]).end();
+      res.send(result.rows[0]).end();
     })
     .catch(err => {
       console.log(err);
