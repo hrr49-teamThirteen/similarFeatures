@@ -7,7 +7,7 @@ const getDataWithPType = (productId) => {
       return Redis.getGroup(`type:${type}`)
         .then(cache => {
           if (cache) {
-            return cache;
+            return JSON.parse(cache);
           } else {
             return PG.getTypeGroup(type);
           }
@@ -22,7 +22,7 @@ const getDataWithCategory = (productId) => {
       return Redis.getGroup(`category:${category}`)
         .then(cache => {
           if (cache) {
-            return cache;
+            return JSON.parse(cache);
           } else {
             return PG.getCategoryGroup(category);
           }
@@ -37,7 +37,7 @@ const getFeaturedData = (productId) => {
       return Redis.getGroup(`featured:${category}`)
         .then(cache => {
           if (cache) {
-            return cache;
+            return JSON.parse(cache);
           } else {
             return PG.getFeaturedGroup(category);
           }
