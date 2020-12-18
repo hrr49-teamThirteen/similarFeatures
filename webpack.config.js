@@ -1,3 +1,6 @@
+const CompressionPlugin = require("compression-webpack-plugin");
+const zlib = require("zlib");
+
 
 module.exports = {
   entry: `${__dirname}/client/src/index.jsx`,
@@ -5,6 +8,7 @@ module.exports = {
     filename: 'bundle.js',
     path: `${__dirname}/public/dist`
   },
+  mode: 'production',
   module: {
     rules: [
       {
@@ -16,5 +20,14 @@ module.exports = {
       }
     ]
   },
-  watch: true
-}
+  plugins: [
+    new CompressionPlugin({
+      algorithm: "brotliCompress",
+      compressionOptions: {
+        params: {
+          [zlib.constants.BROTLI_PARAM_QUALITY]: 11,
+        },
+      },
+    })
+  ],
+};
