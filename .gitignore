@@ -4,6 +4,8 @@ database/config/config.js
 docs
 
 public/dist/bundle.js
+public/dist/bundle.js.LICENSE.txt
+public/dist/bundle.js.LICENSE.txt.gz
 database/seeding/products.csv
 newrelic.js
 newrelic_agent.log
