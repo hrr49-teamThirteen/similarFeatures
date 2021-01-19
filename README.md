@@ -2,6 +2,8 @@
 
 > NearMiss
 
+Carousel of related and featured product photos for any product a user would browse
+
 ## Related Projects
 
   - https://github.com/Team-Martell/InitialViewAndProductPicCarousel
@@ -41,7 +43,7 @@ To seed, you just need to npm run seed(it will create 100 products. if there is 
 An `nvmrc` file is included if using [nvm](https://github.com/creationix/nvm).
 
 - Node 6.13.0
-- etc
+- PostgreSQL
 
 ### Installing Dependencies
 
